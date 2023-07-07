@@ -6,6 +6,8 @@
   "author": "glesiosantos <glesioss@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "git-commit-msg-linter": "^5.0.4"
+    "@types/node": "^20.4.0",
+    "git-commit-msg-linter": "^5.0.4",
+    "typecript": "^0.0.1-security"
   }
 }
