@@ -1,8 +1,8 @@
-import { SignupController } from './signup_controller'
+import { SignUpController } from './signup_controller'
 
-describe('Signup Controller', () => {
+describe('Sign Up Controller', () => {
   it('should return 400 when name is provided', () => {
-    const sut = new SignupController()
+    const sut = new SignUpController()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -12,5 +12,6 @@ describe('Signup Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missing param: name'))
   })
 })
