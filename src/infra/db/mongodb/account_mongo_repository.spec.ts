@@ -6,6 +6,8 @@ describe('Account Mongo Repository', () => {
 
   afterAll(async () => { await MongoHelper.disconnect() })
 
+  beforeEach(async () => await MongoHelper.getCollection('accounts').deleteMany({})) // para remover todos os registro
+
   const makeSut = (): AccountMongoRepository => new AccountMongoRepository()
 
   it('should return an account on success', async () => {
