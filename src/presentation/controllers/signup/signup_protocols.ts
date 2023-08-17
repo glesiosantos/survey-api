@@ -1,0 +1,6 @@
+export * from '../../../domain/usecase/add_account'
+export * from '../../../domain/models/account'
+export * from '../../errors'
+export * from '../../helpers/http_helper'
+export * from '../../protocols'
+export * from '../../protocols/email_validator'
