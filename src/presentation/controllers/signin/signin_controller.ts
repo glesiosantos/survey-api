@@ -1,23 +1,27 @@
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
-import { EmailValidator, InvalidParamError, MissingParamError, badRequest } from '../signup/signup_protocols'
+import { EmailValidator, InvalidParamError, MissingParamError, badRequest, serverError } from '../signup/signup_protocols'
 
 export class SignInController implements Controller {
   constructor (private readonly emailValidator: EmailValidator) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { email, password } = httpRequest.body
+    try {
+      const { email, password } = httpRequest.body
 
-    if (!email) {
-      return badRequest(new MissingParamError('email'))
-    }
-    if (!password) {
-      return badRequest(new MissingParamError('password'))
-    }
+      if (!email) {
+        return badRequest(new MissingParamError('email'))
+      }
+      if (!password) {
+        return badRequest(new MissingParamError('password'))
+      }
 
-    const isValid = this.emailValidator.isValid(email)
+      const isValid = this.emailValidator.isValid(email)
 
-    if (!isValid) {
-      return badRequest(new InvalidParamError('email'))
+      if (!isValid) {
+        return badRequest(new InvalidParamError('email'))
+      }
+    } catch (error) {
+      return serverError(error)
     }
   }
 }
