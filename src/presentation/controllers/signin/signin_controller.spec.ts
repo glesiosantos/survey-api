@@ -1,7 +1,5 @@
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http_helper'
-import { Controller, HttpRequest } from '../../protocols'
-import { EmailValidator } from '../signup/signup_protocols'
+import { Controller, EmailValidator, HttpRequest, InvalidParamError, MissingParamError, ServerError, badRequest, serverError } from './signin_protocols'
+
 import { SignInController } from './signin_controller'
 
 type SutTypes = {
