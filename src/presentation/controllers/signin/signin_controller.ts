@@ -1,7 +1,7 @@
-import { Controller, EmailValidator, HttpRequest, HttpResponse, InvalidParamError, MissingParamError, badRequest, serverError } from './signin_protocols'
+import { Authentication, Controller, EmailValidator, HttpRequest, HttpResponse, InvalidParamError, MissingParamError, badRequest, serverError } from './signin_protocols'
 
 export class SignInController implements Controller {
-  constructor (private readonly emailValidator: EmailValidator) {}
+  constructor (private readonly emailValidator: EmailValidator, private readonly authentication: Authentication) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -19,6 +19,8 @@ export class SignInController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
+
+      await this.authentication.auth(email, password)
     } catch (error) {
       return serverError(error)
     }
