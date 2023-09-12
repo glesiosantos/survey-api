@@ -1,4 +1,4 @@
-import { Authentication, Controller, EmailValidator, HttpRequest, HttpResponse, InvalidParamError, MissingParamError, badRequest, serverError, unauthorized } from './signin_protocols'
+import { Authentication, Controller, EmailValidator, HttpRequest, HttpResponse, InvalidParamError, MissingParamError, badRequest, ok, serverError, unauthorized } from './signin_protocols'
 
 export class SignInController implements Controller {
   constructor (private readonly emailValidator: EmailValidator, private readonly authentication: Authentication) {}
@@ -22,7 +22,8 @@ export class SignInController implements Controller {
       }
 
       const accessToken = await this.authentication.auth(email, password)
-      if (!accessToken) return unauthorized()
+      if (!accessToken) { return unauthorized() }
+      return ok({ accessToken })
     } catch (error) {
       return serverError(error)
     }
