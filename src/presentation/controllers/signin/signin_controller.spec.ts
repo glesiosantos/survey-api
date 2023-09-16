@@ -1,11 +1,14 @@
-import { Authentication, Controller, EmailValidator, HttpRequest, InvalidParamError, MissingParamError, ServerError, badRequest, ok, serverError, unauthorized } from './signin_protocols'
+import {
+  Authentication, Controller, HttpRequest, MissingParamError, ServerError,
+  Validation, badRequest, ok, serverError, unauthorized
+} from './signin_protocols'
 
 import { SignInController } from './signin_controller'
 
 type SutTypes = {
   sut: Controller
-  emailValidatorStub: EmailValidator
   authenticationStub: Authentication
+  validationStub: Validation
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -15,14 +18,15 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
-const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      return true
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): Error {
+      return null
     }
   }
-  return new EmailValidatorStub()
+  return new ValidationStub()
 }
+
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
     async auth (email: string, password: string): Promise<string> {
@@ -33,56 +37,25 @@ const makeAuthentication = (): Authentication => {
 }
 
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = makeEmailValidator()
   const authenticationStub = makeAuthentication()
-  const sut = new SignInController(emailValidatorStub, authenticationStub)
-  return { sut, emailValidatorStub, authenticationStub }
+  const validationStub = makeValidation()
+  const sut = new SignInController(authenticationStub, validationStub)
+  return { sut, authenticationStub, validationStub }
 }
 
 describe('Sign In Controller', () => {
-  it('should return 400 when no email is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        password: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
-  })
-
-  it('should return 400 when no password is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        email: 'any_email@mail.com'
-      }
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
-  })
-
-  it('should calls EmailValidator with correct email', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
+  it('should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(makeFakeRequest())
-    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
   })
 
-  it('should return badRequest when invalid e-mail provided', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValue(false)
+  it('should return 400 when Validation return an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
-  })
-
-  it('should return 500 when EmailValidator throws', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => { throw new Error() })
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError(new ServerError(new Error().stack)))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 
   it('should calls Authentication with correct values', async () => {
