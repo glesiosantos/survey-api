@@ -17,6 +17,13 @@ const makeFakeAuthentication = (): AuthenticationModel => ({
   password: 'any_password'
 })
 
+const makeFakeAccount = (): AccountModel => ({
+  id: 'any_id_value',
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'hashed_password'
+})
+
 const makeTokenGenerate = (): TokenGenerator => {
   class TokenGeneratorStub implements TokenGenerator {
     async generate (id: string): Promise<string> {
@@ -40,13 +47,7 @@ const makeHashComparer = (): HashComparer => {
 const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel> {
-      const accountFake = {
-        id: 'any_id_value',
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'hashed_password'
-      }
-      return new Promise(resolve => resolve(accountFake))
+      return new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
 
@@ -88,7 +89,7 @@ describe('DBAthentication UseCase', () => {
     const { sut, hashComparerStub } = makeSut()
     const comparerSpy = jest.spyOn(hashComparerStub, 'compare')
     await sut.auth(makeFakeAuthentication())
-    expect(comparerSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
+    expect(comparerSpy).toHaveBeenCalledWith(makeFakeAuthentication().password, makeFakeAccount().password)
   })
 
   it('should throws when HashComparer throws', async () => {
