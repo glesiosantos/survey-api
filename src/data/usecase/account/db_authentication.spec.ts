@@ -1,4 +1,5 @@
 import { Authentication } from '../../../domain/usecase/authentication'
+import { HashComparer } from '../../protocols/criptography/hash_comparer'
 import { LoadAccountByEmailRepository } from '../../protocols/db/load_account_by_email_repository'
 import { AccountModel } from './db_add_account_protocols'
 import { DBAthentication } from './db_authentication'
@@ -6,6 +7,17 @@ import { DBAthentication } from './db_authentication'
 type SutTypes = {
   sut: Authentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
+  hashComparerStub: HashComparer
+}
+
+const makeHashComparer = (): HashComparer => {
+  class HashComparerStub implements HashComparer {
+    async compare (value: string, hash: string): Promise<boolean> {
+      return new Promise(resolve => resolve(null))
+    }
+  }
+
+  return new HashComparerStub()
 }
 
 const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
@@ -26,8 +38,9 @@ const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
-  const sut = new DBAthentication(loadAccountByEmailRepositoryStub)
-  return { sut, loadAccountByEmailRepositoryStub }
+  const hashComparerStub = makeHashComparer()
+  const sut = new DBAthentication(loadAccountByEmailRepositoryStub, hashComparerStub)
+  return { sut, loadAccountByEmailRepositoryStub, hashComparerStub }
 }
 
 describe('DBAthentication UseCase', () => {
@@ -60,5 +73,15 @@ describe('DBAthentication UseCase', () => {
       password: 'any_password'
     })
     expect(accessToken).toBeNull
+  })
+
+  it('should return calls HashComparer with corrects values', async () => {
+    const { sut, hashComparerStub } = makeSut()
+    const comparerSpy = jest.spyOn(hashComparerStub, 'compare')
+    await sut.auth({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    expect(comparerSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
   })
 })
