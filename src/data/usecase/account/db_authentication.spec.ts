@@ -15,7 +15,7 @@ type SutTypes = {
 const makeTokenGenerate = (): TokenGenerator => {
   class TokenGeneratorStub implements TokenGenerator {
     async generate (id: string): Promise<string> {
-      return new Promise(resolve => resolve(null))
+      return new Promise(resolve => resolve('any_token'))
     }
   }
 
@@ -25,7 +25,7 @@ const makeTokenGenerate = (): TokenGenerator => {
 const makeHashComparer = (): HashComparer => {
   class HashComparerStub implements HashComparer {
     async compare (value: string, hash: string): Promise<boolean> {
-      return new Promise(resolve => resolve(null))
+      return new Promise(resolve => resolve(true))
     }
   }
 
@@ -85,7 +85,7 @@ describe('DBAthentication UseCase', () => {
       email: 'any_email@mail.com',
       password: 'any_password'
     })
-    expect(accessToken).toBeNull
+    expect(accessToken).toBeNull()
   })
 
   it('should return calls HashComparer with correct values', async () => {
@@ -116,7 +116,7 @@ describe('DBAthentication UseCase', () => {
       email: 'any_email@mail.com',
       password: 'any_password'
     })
-    expect(accessToken).toBeNull
+    expect(accessToken).toBeNull()
   })
 
   it('should return calls TokenGenerator with correct id', async () => {
@@ -138,5 +138,14 @@ describe('DBAthentication UseCase', () => {
       password: 'any_password'
     })
     await expect(promise).rejects.toThrow()
+  })
+
+  it('should return access token when TokenGenerator is succeed', async () => {
+    const { sut } = makeSut()
+    const accessToken = await sut.auth({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    expect(accessToken).toBe('any_token')
   })
 })
