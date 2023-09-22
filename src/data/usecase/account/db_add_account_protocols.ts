@@ -1,3 +1,4 @@
+export * from '../account/db_add_account_protocols'
 export * from '../../../domain/models/account'
 export * from '../../../domain/usecase/add_account'
 export * from '../../protocols/criptography/encrypter'
