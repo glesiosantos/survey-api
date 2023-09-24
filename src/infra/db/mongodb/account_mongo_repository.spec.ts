@@ -1,8 +1,15 @@
 import { Collection } from 'mongodb'
 import { AccountMongoRepository } from './account_mongo_repository'
 import { MongoHelper } from './mongo_helper'
+import { AddAccountModel } from '../../../domain/usecase/add_account'
 
 let accountColletion: Collection
+
+const makeAddAccountFake = (): AddAccountModel => ({
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'hashed_password'
+})
 
 describe('Account Mongo Repository', () => {
   beforeAll(async () => { await MongoHelper.connect(process.env.MONGO_URL) })
@@ -18,22 +25,14 @@ describe('Account Mongo Repository', () => {
 
   it('should return an account on mehtod add success', async () => {
     const sut = makeSut()
-    const account = await sut.add({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'hashed_password'
-    })
+    const account = await sut.add(makeAddAccountFake())
     expect(account).toBeTruthy()
     expect(account.id).toBeTruthy()
   })
 
   it('should return an account on loadByEmail method success', async () => {
     // simulando uma conta cadastrada
-    await accountColletion.insertOne({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'hashed_password'
-    })
+    await accountColletion.insertOne(makeAddAccountFake())
 
     const sut = makeSut()
     const account = await sut.loadByEmail('any_email@mail.com')
@@ -49,11 +48,7 @@ describe('Account Mongo Repository', () => {
 
   it('should update Account accessToken on updateAccessToken method success', async () => {
     // simulando uma conta cadastrada
-    const insertAccount = await accountColletion.insertOne({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'hashed_password'
-    })
+    const insertAccount = await accountColletion.insertOne(makeAddAccountFake())
 
     // Antes do update
     const account = await accountColletion.findOne({ _id: insertAccount.insertedId })
