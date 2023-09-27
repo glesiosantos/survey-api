@@ -21,4 +21,15 @@ describe('Auth Router', () => {
         .expect(200)
     })
   })
+
+  // describe('POST/ Sign In', () => {
+  //   it('should return 200 on success', async () => {
+  //     await request(app).post('/api/signin')
+  //       .send({
+  //         email: 'any_email@mail.com',
+  //         password: 'any_password'
+  //       })
+  //       .expect(200)
+  //   })
+  // })
 })
