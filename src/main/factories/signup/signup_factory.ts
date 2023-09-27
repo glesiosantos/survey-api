@@ -4,7 +4,7 @@ import { AccountMongoRepository } from '../../../infra/db/mongodb/account_mongo_
 import { LogMongoRepository } from '../../../infra/db/mongodb/log_mongo_repository'
 import { SignUpController } from '../../../presentation/controllers/signup/signup_controller'
 import { Controller } from '../../../presentation/protocols'
-import { LogControllerDecorator } from '../../decorators/log'
+import { LogControllerDecorator } from '../../decorators/log_controller_decorator'
 import { makeSignUpValidation } from '../signup/signup_validation'
 
 export const makeSignupController = (): Controller => {
