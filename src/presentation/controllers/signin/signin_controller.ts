@@ -14,6 +14,7 @@ export class SignInController implements Controller {
       const { email, password } = httpRequest.body
 
       const accessToken = await this.authentication.auth({ email, password })
+
       if (!accessToken) { return unauthorized() }
       return ok({ accessToken })
     } catch (error) {

@@ -4,13 +4,13 @@ import { AccountMongoRepository } from '../../../infra/db/mongodb/account_mongo_
 import { LogMongoRepository } from '../../../infra/db/mongodb/log_mongo_repository'
 import { SignUpController } from '../../../presentation/controllers/signup/signup_controller'
 import { Controller } from '../../../presentation/protocols'
-import { LogControllerDecorator } from '../../decorators/log'
+import { LogControllerDecorator } from '../../decorators/log_controller_decorator'
 import { makeSignUpValidation } from '../signup/signup_validation'
 
 export const makeSignupController = (): Controller => {
   const addAccountRepository = new AccountMongoRepository()
-  const encrypter = new BCryptAdapter(12)
-  const dbAddAccount = new DbAddAccount(encrypter, addAccountRepository)
+  const hasher = new BCryptAdapter(12)
+  const dbAddAccount = new DbAddAccount(hasher, addAccountRepository)
   const signupController = new SignUpController(dbAddAccount, makeSignUpValidation())
   const logMongoRepository = new LogMongoRepository()
   return new LogControllerDecorator(signupController, logMongoRepository)
