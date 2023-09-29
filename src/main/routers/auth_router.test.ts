@@ -46,5 +46,14 @@ describe('Auth Router', () => {
         })
         .expect(200)
     })
+
+    it('should return 401 ', async () => {
+      await request(app).post('/api/signin')
+        .send({
+          email: 'glesioss@gmail.com',
+          password: 'any_password'
+        })
+        .expect(401)
+    })
   })
 })
