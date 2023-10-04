@@ -1,5 +1,6 @@
 coverage
 build
 node_modules
+data
 
 yarn.lock
