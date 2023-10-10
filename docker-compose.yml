@@ -1,0 +1,26 @@
+version: "3"
+services:
+  mongo:
+    container_name: mongo-container
+    image: mongo:5
+    restart: always
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+  api:
+    container_name: survey-api
+    image: node:18
+    working_dir: /usr/src/survey-api
+    restart: always
+    command: bash -c "npm install --omit=dev && npm run debug"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/survey-api
+    volumes:
+      - ./build/:/usr/src/survey-api/build/
+      - ./package.json:/usr/src/survey-api/package.json
+    ports:
+      - "3000:3000"
+      - "9222:9222"
+    links:
+      - mongo
