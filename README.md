@@ -181,6 +181,10 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 * Upsert e ReturnOriginal
 * Push, Divide, Multiply, ArrayElemAt, Cond, Sum
 * Filter, Map, Reduce, MergeObjects, ConcatArrays
+=======
+# SURVEY-API
+Learning Clean Architecture and SOLID with Typescript
+>>>>>>> 41f8fe7 (Settings docker compose (#9))
 
 
 ## para testar no package.json
