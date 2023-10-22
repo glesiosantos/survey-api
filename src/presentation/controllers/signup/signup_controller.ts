@@ -1,9 +1,9 @@
 import { AddAccount, Authentication, Controller, HttpRequest, HttpResponse, Validation, badRequest, ok, serverError } from './signup_protocols'
 
 export class SignUpController implements Controller {
-  constructor(private readonly addAccount: AddAccount, private readonly authentication: Authentication, private readonly validation: Validation) { }
+  constructor (private readonly addAccount: AddAccount, private readonly authentication: Authentication, private readonly validation: Validation) { }
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(httpRequest.body)
 
