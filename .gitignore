@@ -3,5 +3,6 @@ build
 node_modules
 data
 
+globalConfig.json
 .vscode
 yarn.lock
