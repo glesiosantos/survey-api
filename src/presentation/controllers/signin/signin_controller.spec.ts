@@ -1,5 +1,5 @@
 import {
-  Authentication, AuthenticationModel, Controller, HttpRequest, MissingParamError, ServerError,
+  Authentication, AuthenticationModel, Controller, HttpRequest, MissingParamError,
   Validation, badRequest, ok, serverError, unauthorized
 } from './signin_protocols'
 
@@ -20,7 +20,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: any): Error {
+    validate (input: any): Error | null {
       return null
     }
   }
@@ -67,7 +67,7 @@ describe('Sign In Controller', () => {
 
   it('should return 401 when invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut()
-    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve('')))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(unauthorized())
   })
@@ -76,7 +76,7 @@ describe('Sign In Controller', () => {
     const { sut, authenticationStub } = makeSut()
     jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError(new ServerError(new Error().stack)))
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   it('should return 200 when Authentication throws', async () => {

@@ -5,7 +5,7 @@ services:
     image: mongo:5
     restart: always
     volumes:
-      - ./data:/data/db
+      - ./docker:/data/db
     ports:
       - "27017:27017"
   api:

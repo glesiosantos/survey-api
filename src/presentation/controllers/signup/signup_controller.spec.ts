@@ -1,5 +1,5 @@
 import { SignUpController } from './signup_controller'
-import { AccountModel, AddAccount, AddAccountModel, Authentication, AuthenticationModel, HttpRequest, MissingParamError, ServerError, Validation, badRequest, ok, serverError } from './signup_protocols'
+import { AccountModel, AddAccount, AddAccountModel, Authentication, AuthenticationModel, HttpRequest, MissingParamError, Validation, badRequest, ok, serverError } from './signup_protocols'
 
 type SutTypes = {
   sut: SignUpController
@@ -26,7 +26,7 @@ const makeFakeAccount = (): AccountModel => ({
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add(account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountModel): Promise<AccountModel> {
       return new Promise(resolve => { resolve(makeFakeAccount()) })
     }
   }
@@ -35,7 +35,7 @@ const makeAddAccount = (): AddAccount => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth(authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationModel): Promise<string> {
       return new Promise(resolve => resolve('any_token'))
     }
   }
@@ -44,7 +44,7 @@ const makeAuthentication = (): Authentication => {
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate(input: any): Error {
+    validate (input: any): Error | null {
       return null
     }
   }
