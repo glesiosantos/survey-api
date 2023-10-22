@@ -79,7 +79,7 @@ describe('Sign In Controller', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  it('should return 200 when Authentication throws', async () => {
+  it('should return 200 when Authentication success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
