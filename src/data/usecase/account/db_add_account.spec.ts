@@ -96,12 +96,6 @@ describe('DdAddAccount Usecase', () => {
     await expect(account).rejects.toThrow()
   })
 
-  it('should return an account on success', async () => {
-    const { sut } = makeSut()
-    const result = await sut.add(makeFakeAccountData())
-    expect(result).toEqual(makeFakeAccount())
-  })
-
   it('should calls LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     const loadByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
@@ -124,9 +118,9 @@ describe('DdAddAccount Usecase', () => {
     expect(account).toBeNull()
   })
 
-  // it('should return null when LoadAccountByEmailRepository return null', async () => {
-  //   const { sut } = makeSut()
-  //   const account = await sut.add(makeFakeAccountData())
-  //   expect(account).toBeNull()
-  // })
+  it('should return an account on success', async () => {
+    const { sut } = makeSut()
+    const result = await sut.add(makeFakeAccountData())
+    expect(result).toEqual(makeFakeAccount())
+  })
 })
