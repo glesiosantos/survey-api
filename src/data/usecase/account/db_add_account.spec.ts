@@ -108,4 +108,12 @@ describe('DdAddAccount Usecase', () => {
     await sut.add(makeFakeAccountData())
     expect(loadByEmailSpy).toHaveBeenCalledWith(makeFakeAccountData().email)
   })
+
+  it('should throws when LoadAccountByEmailRepository throws', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.add(makeFakeAccountData())
+    await expect(promise).rejects.toThrow()
+  })
 })
