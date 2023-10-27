@@ -1,18 +1,7 @@
-import { EmailValidator } from '../../../../presentation/protocols/email_validator'
 import { Validation } from '../../../../presentation/protocols/validation'
-import { ComparedFieldValidation, EmailFieldValidation, RequiredFieldValidation, ValidationComposite } from '../../../../validations/validators'
 import { makeSignUpValidation } from './signup_validation'
-
-jest.mock('../../../../validations/validators/validation_composite')
-
-export const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(email: string): boolean {
-      return true
-    }
-  }
-  return new EmailValidatorStub()
-}
+import { ComparedFieldValidation, EmailFieldValidation, RequiredFieldValidation } from '../../../../validations/validators'
+import { makeEmailValidator } from './signup_validation.spec'
 
 describe('Sign Up Validation', () => {
   it('should calls ValidationComposite with all validations', () => {
@@ -23,6 +12,6 @@ describe('Sign Up Validation', () => {
     }
     validations.push(new ComparedFieldValidation('password', 'passwordConfirmation'))
     validations.push(new EmailFieldValidation('email', makeEmailValidator()))
-    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+    expect(ValidationComposie).toHaveBeenCalledWith(validations)
   })
 })
