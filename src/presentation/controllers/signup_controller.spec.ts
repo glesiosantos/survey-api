@@ -1,7 +1,6 @@
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { badRequest } from '../helper/http_helper'
-import { Controller } from '../protocols/controller'
-import { EmailValidator } from '../protocols/email_validator'
+import { Controller, EmailValidator } from '../protocols'
+import { badRequest, serverError } from '../helper/http_helper'
 import { SignUpController } from './signup_controller'
 
 type Sutypes = {
@@ -72,7 +71,7 @@ describe('SignUp Controller', () => {
     }
 
     const httpResponse = sut.handle(httpRequest)
-    expect(httpResponse).toEqual({ statusCode: 500, body: new ServerError() })
+    expect(httpResponse).toEqual(serverError(new ServerError()))
   })
 
   it('should return 400 when an invalid e-mail is provided', () => {
