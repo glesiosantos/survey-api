@@ -1,12 +1,31 @@
+import { InvalidParamError } from '../errors/invalid_param_error'
 import { MissingParamError } from '../errors/missing_param_error'
 import { badRequest } from '../helper/http_helper'
+import { Controller } from '../protocols/controller'
+import { EmailValidator } from '../protocols/email_validator'
 import { SignUpController } from './signup_controller'
 
-const makeSut = () => new SignUpController()
+type Sutypes = {
+  sut: Controller
+  emailValidatorStub: EmailValidator
+}
+
+const makeSut = (): Sutypes => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      return true
+    }
+  }
+
+  const emailValidatorStub = new EmailValidatorStub()
+  const sut = new SignUpController(emailValidatorStub)
+
+  return { sut, emailValidatorStub }
+}
 
 describe('SignUp Controller', () => {
   it('should return 400 when no name is provided', () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
@@ -21,7 +40,7 @@ describe('SignUp Controller', () => {
   })
 
   it('should return 400 when email is not provided', () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
@@ -35,8 +54,26 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
   })
 
+  it('should return 400 when an invalid e-mail is provided', () => {
+    const { sut, emailValidatorStub } = makeSut()
+
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid_email@email.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
+  })
+
   it('should return 400 when password is not provided', () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
@@ -51,7 +88,7 @@ describe('SignUp Controller', () => {
   })
 
   it('should return 400 when password confirmation is not provided', () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
