@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "test": "jest",
-    "test:staged": "jest"
+    "test": "jest --passWithNoTests --watch",
+    "test:staged": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
