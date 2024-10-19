@@ -6,8 +6,12 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "test": "jest --passWithNoTests --watch",
-    "test:staged": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:verbose": "jest --passWithNoTests",
+    "test:unit": "npm test -- --watch -c jest_unit.config.js",
+    "test:inte": "npm test -- --watch -c jest_inte.config.js",
+    "test:staged": "npm test -- --findRelatedTests",
+    "test:ci": "npm test -- --coverage"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
