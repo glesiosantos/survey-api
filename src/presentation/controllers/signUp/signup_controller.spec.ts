@@ -194,4 +194,22 @@ describe('SignUp Controller', () => {
       password: 'any_password'
     })
   })
+
+  it('should return 500 when AddAccount thows', () => {
+    const { sut, addAccountStub } = makeSut()
+
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new ServerError() })
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid_email@email.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new ServerError()))
+  })
 })
