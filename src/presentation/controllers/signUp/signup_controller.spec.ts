@@ -1,5 +1,5 @@
 import { SignUpController } from './signup_controller'
-import { badRequest, serverError } from '../../helper/http_helper'
+import { badRequest, ok, serverError } from '../../helper/http_helper'
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { AccountModel, AddAccount, AddAccountModel, Controller, EmailValidator } from './signup_protocols'
 
@@ -226,14 +226,13 @@ describe('SignUp Controller', () => {
     }
 
     const response = sut.handle(httpRequest)
-    expect(response).toEqual({
-      statusCode: 200,
-      body: {
+    expect(response).toEqual(ok(
+      {
         id: 'any_id',
         name: 'any_name',
         email: 'any_email@email.com',
         password: 'hashed_password'
       }
-    })
+    ))
   })
 })
