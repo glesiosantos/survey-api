@@ -1,7 +1,6 @@
-import { badRequest, serverError } from '../helper/http_helper'
-import { Controller, EmailValidator, HttpRequest, HttpResponse } from '../protocols'
-import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { AddAccount } from '../../domain/usecase/add_account'
+import { badRequest, serverError } from '../../helper/http_helper'
+import { Controller, EmailValidator, HttpRequest, HttpResponse, AddAccount } from './signup_protocols'
+import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 
 export class SignUpController implements Controller {
   constructor (readonly emailValidator: EmailValidator, readonly addAccount: AddAccount) {}
